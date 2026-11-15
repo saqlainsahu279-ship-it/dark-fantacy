@@ -1,0 +1,940 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111111">
+<title>Dark Fantasy | Watch & Share</title>
+
+<style>
+:root {
+  --bg:#101010;
+  --panel:#191919;
+  --panel2:#222;
+  --text:#f5f5f5;
+  --muted:#aaa;
+  --accent:#e50914;
+  --border:#303030;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+header{
+  height:66px;
+  background:#151515;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  position:sticky;
+  top:0;
+  z-index:10;
+  gap:15px;
+}
+.logo{
+  font-size:23px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.logo span{color:var(--accent)}
+.search{
+  display:flex;
+  max-width:500px;
+  width:100%;
+}
+.search input{
+  width:100%;
+  background:#252525;
+  color:white;
+  border:1px solid var(--border);
+  padding:11px 14px;
+  border-radius:7px 0 0 7px;
+  outline:none;
+}
+.search button,.primary{
+  background:var(--accent);
+  border:0;
+  color:white;
+  padding:11px 17px;
+  border-radius:0 7px 7px 0;
+  font-weight:bold;
+}
+.header-actions{display:flex;gap:8px}
+.btn{
+  border:1px solid var(--border);
+  background:#252525;
+  color:white;
+  padding:10px 13px;
+  border-radius:7px;
+}
+.btn:hover{background:#383838}
+.primary{border-radius:7px}
+.layout{display:flex;min-height:calc(100vh - 66px)}
+.sidebar{
+  width:225px;
+  padding:20px 12px;
+  background:#151515;
+  border-right:1px solid var(--border);
+  flex-shrink:0;
+}
+.nav{
+  width:100%;
+  display:block;
+  text-align:left;
+  background:transparent;
+  border:0;
+  color:#ddd;
+  padding:13px;
+  border-radius:7px;
+  margin-bottom:5px;
+}
+.nav:hover,.nav.active{background:#303030;color:white}
+.nav.active{border-left:3px solid var(--accent)}
+.main{flex:1;min-width:0;padding:23px}
+.section-title{
+  font-size:23px;
+  margin-bottom:18px;
+}
+.categories{
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding-bottom:18px;
+}
+.category{
+  border:1px solid var(--border);
+  background:#252525;
+  color:white;
+  border-radius:20px;
+  padding:9px 16px;
+  white-space:nowrap;
+}
+.category.active{background:white;color:#111}
+.video-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:20px;
+}
+.video-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.2s;
+}
+.video-card:hover{transform:translateY(-3px)}
+.thumbnail{
+  width:100%;
+  aspect-ratio:16/9;
+  background:#292929;
+  object-fit:cover;
+  display:block;
+}
+.video-info{padding:12px}
+.video-title{font-weight:bold;line-height:1.4;margin-bottom:7px}
+.video-meta{font-size:12px;color:var(--muted)}
+.badge{
+  display:inline-block;
+  background:#382020;
+  color:#ff7777;
+  padding:4px 7px;
+  border-radius:4px;
+  font-size:10px;
+  margin-bottom:8px;
+}
+.page{display:none}
+.page.active{display:block}
+.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:18px;
+}
+input,textarea,select{
+  width:100%;
+  background:#252525;
+  color:white;
+  border:1px solid #444;
+  border-radius:7px;
+  padding:12px;
+  margin:7px 0 14px;
+  outline:none;
+}
+textarea{min-height:100px;resize:vertical}
+label{font-size:13px;color:#ccc}
+.form-wrap{max-width:520px}
+.form-wrap h2{margin-bottom:18px}
+.form-wrap button{width:100%}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.stat{
+  background:#252525;
+  padding:18px;
+  border-radius:9px;
+}
+.stat strong{font-size:25px;display:block;margin-bottom:5px}
+.player{
+  width:100%;
+  background:black;
+  aspect-ratio:16/9;
+  border-radius:10px;
+}
+.player video{width:100%;height:100%;object-fit:contain}
+.video-actions{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0}
+.list-item{
+  padding:13px 0;
+  border-bottom:1px solid var(--border);
+}
+.notice{
+  border-left:3px solid var(--accent);
+  background:#261b1b;
+  padding:13px;
+  border-radius:5px;
+  margin:15px 0;
+  font-size:13px;
+  line-height:1.5;
+}
+footer{
+  border-top:1px solid var(--border);
+  padding:25px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+.modal{
+  position:fixed;
+  inset:0;
+  background:#000d;
+  z-index:50;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.modal.show{display:flex}
+.modal-box{
+  width:100%;
+  max-width:440px;
+  background:#1b1b1b;
+  border:1px solid #444;
+  padding:25px;
+  border-radius:13px;
+}
+.modal-box h2{margin-bottom:13px}
+.modal-box button{margin-top:8px}
+.hidden{display:none!important}
+.mobile-nav{display:none}
+@media(max-width:1100px){
+  .video-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  header{padding:0 12px;height:auto;min-height:60px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+  .logo{font-size:19px}
+  .search{order:3;max-width:none}
+  .header-actions .btn{padding:8px}
+  .layout{display:block}
+  .sidebar{display:none}
+  .main{padding:15px 12px 85px}
+  .video-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .video-info{padding:9px}
+  .video-title{font-size:13px}
+  .stats{grid-template-columns:1fr}
+  .mobile-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#171717;
+    border-top:1px solid var(--border);
+    justify-content:space-around;
+    padding:10px 3px;
+    z-index:20;
+  }
+  .mobile-nav button{
+    background:none;
+    border:0;
+    color:white;
+    font-size:11px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    align-items:center;
+  }
+}
+@media(max-width:380px){
+  .video-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">DARK <span>FANTASY</span></div>
+
+  <div class="search">
+    <input id="searchInput" placeholder="Search videos..." oninput="renderVideos()">
+    <button onclick="renderVideos()">Search</button>
+  </div>
+
+  <div class="header-actions">
+    <button class="btn" onclick="showPage('upload')">＋ Upload</button>
+    <button class="btn" id="accountButton" onclick="showPage('account')">Sign in</button>
+  </div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <button class="nav active" onclick="showPage('home',this)">⌂ Home</button>
+  <button class="nav" onclick="showPage('explore',this)">◉ Explore</button>
+  <button class="nav" onclick="showPage('trending',this)">↗ Trending</button>
+  <button class="nav" onclick="showPage('subscriptions',this)">▣ Subscriptions</button>
+  <button class="nav" onclick="showPage('history',this)">◷ History</button>
+  <button class="nav" onclick="showPage('liked',this)">♡ Liked videos</button>
+  <button class="nav" onclick="showPage('upload',this)">＋ Upload video</button>
+  <button class="nav" onclick="showPage('studio',this)">▤ Creator Studio</button>
+  <button class="nav" onclick="showPage('account',this)">♙ Account</button>
+</aside>
+
+<main class="main">
+
+<section class="page active" id="home">
+  <h2 class="section-title">Discover videos</h2>
+  <div class="categories" id="categories">
+    <button class="category active" onclick="setCategory('All',this)">All</button>
+    <button class="category" onclick="setCategory('Entertainment',this)">Entertainment</button>
+    <button class="category" onclick="setCategory('Gaming',this)">Gaming</button>
+    <button class="category" onclick="setCategory('Technology',this)">Technology</button>
+    <button class="category" onclick="setCategory('Education',this)">Education</button>
+    <button class="category" onclick="setCategory('Music',this)">Music</button>
+    <button class="category" onclick="setCategory('Nature',this)">Nature</button>
+  </div>
+  <div class="video-grid" id="videoGrid"></div>
+</section>
+
+<section class="page" id="explore">
+  <h2 class="section-title">Explore</h2>
+  <p class="muted">Discover videos from different categories.</p>
+  <br>
+  <div class="video-grid" id="exploreGrid"></div>
+</section>
+
+<section class="page" id="trending">
+  <h2 class="section-title">Trending videos</h2>
+  <div class="video-grid" id="trendingGrid"></div>
+</section>
+
+<section class="page" id="watch">
+  <div class="player">
+    <video id="videoPlayer" controls playsinline></video>
+  </div>
+  <br>
+  <h2 id="watchTitle">Video title</h2>
+  <p class="muted" id="watchMeta"></p>
+  <div class="video-actions">
+    <button class="btn" onclick="toggleLike()">♡ Like</button>
+    <button class="btn" onclick="subscribeCreator()">＋ Subscribe</button>
+    <button class="btn" onclick="shareVideo()">↗ Share</button>
+  </div>
+  <div class="panel">
+    <h3>Description</h3><br>
+    <p id="watchDescription" class="muted"></p>
+  </div>
+  <div class="panel">
+    <h3>Comments</h3>
+    <input id="commentInput" placeholder="Write a comment...">
+    <button class="primary" onclick="addComment()">Post comment</button>
+    <div id="comments"></div>
+  </div>
+</section>
+
+<section class="page" id="subscriptions">
+  <h2 class="section-title">Subscriptions</h2>
+  <div class="panel">
+    <p class="muted">Your subscribed creators will appear here.</p>
+  </div>
+</section>
+
+<section class="page" id="history">
+  <h2 class="section-title">Watch history</h2>
+  <div class="video-grid" id="historyGrid"></div>
+</section>
+
+<section class="page" id="liked">
+  <h2 class="section-title">Liked videos</h2>
+  <div class="video-grid" id="likedGrid"></div>
+</section>
+
+<section class="page" id="upload">
+  <div class="panel form-wrap">
+    <h2>Upload video</h2>
+    <div class="notice">
+      Uploads are restricted until age assurance, creator verification,
+      performer consent checks and moderation have been completed.
+      This frontend cannot approve or publish restricted content.
+    </div>
+    <label>Video title</label>
+    <input id="uploadTitle" placeholder="Enter video title">
+    <label>Description</label>
+    <textarea id="uploadDescription" placeholder="Describe your video"></textarea>
+    <label>Category</label>
+    <select id="uploadCategory">
+      <option>Entertainment</option>
+      <option>Gaming</option>
+      <option>Technology</option>
+      <option>Education</option>
+      <option>Music</option>
+      <option>Nature</option>
+    </select>
+    <label>Thumbnail URL</label>
+    <input id="uploadThumbnail" placeholder="https://example.com/thumbnail.jpg">
+    <label>Video URL</label>
+    <input id="uploadVideoUrl" placeholder="Secure hosted video URL">
+    <label>
+      <input type="checkbox" id="consentAttestation" style="width:auto">
+      I confirm that I have the necessary rights and documented consent.
+    </label>
+    <button class="primary" onclick="submitUpload()">Submit for review</button>
+    <p class="muted" id="uploadMessage"></p>
+  </div>
+</section>
+
+<section class="page" id="studio">
+  <h2 class="section-title">Creator Studio</h2>
+  <div class="stats">
+    <div class="stat"><strong id="statVideos">0</strong><span class="muted">Videos</span></div>
+    <div class="stat"><strong id="statViews">0</strong><span class="muted">Views</span></div>
+    <div class="stat"><strong id="statLikes">0</strong><span class="muted">Likes</span></div>
+  </div>
+  <br>
+  <div class="panel">
+    <h3>Content management</h3>
+    <p class="muted">Your submitted videos and their review statuses appear here.</p>
+    <div id="creatorVideos"></div>
+  </div>
+  <div class="panel">
+    <h3>Safety requirements</h3>
+    <ul class="muted" style="padding:18px;line-height:2">
+      <li>Verified adult creator account</li>
+      <li>Independent age assurance</li>
+      <li>Documented consent for every identifiable performer</li>
+      <li>Human moderation and reporting process</li>
+      <li>Secure private compliance records</li>
+    </ul>
+  </div>
+</section>
+
+<section class="page" id="account">
+  <div class="panel form-wrap">
+    <h2>Account</h2>
+    <div id="signedOut">
+      <label>Email address</label>
+      <input id="email" type="email" placeholder="Email">
+      <label>Password</label>
+      <input id="password" type="password" placeholder="Password">
+      <button class="primary" onclick="signIn()">Sign in</button>
+      <br><br>
+      <button class="btn" style="width:100%" onclick="register()">Create account</button>
+    </div>
+    <div id="signedIn" class="hidden">
+      <h3 id="userEmail"></h3><br>
+      <p class="muted">Your account is signed in.</p><br>
+      <p class="muted" id="verificationStatus">Age verification: not verified</p>
+      <br>
+      <button class="primary" onclick="beginAgeVerification()">Start age verification</button>
+      <br><br>
+      <button class="btn" onclick="signOut()">Sign out</button>
+    </div>
+    <p class="muted" id="authMessage"></p>
+  </div>
+</section>
+
+<section class="page" id="admin">
+  <h2 class="section-title">Moderation dashboard</h2>
+  <div class="notice">Admin access must be authorized by trusted Firebase server-side custom claims. Never grant admin access from this page.</div>
+  <div class="panel">
+    <h3>Pending submissions</h3>
+    <div id="moderationQueue"></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<nav class="mobile-nav">
+  <button onclick="showPage('home')">⌂<span>Home</span></button>
+  <button onclick="showPage('explore')">◉<span>Explore</span></button>
+  <button onclick="showPage('upload')">＋<span>Upload</span></button>
+  <button onclick="showPage('studio')">▤<span>Studio</span></button>
+  <button onclick="showPage('account')">♙<span>Account</span></button>
+</nav>
+
+<footer>
+  DARK FANTASY · Watch, discover and share
+  <br><br>
+  Access is restricted to verified adults where legally permitted.
+  All uploads are subject to safety review and applicable laws.
+</footer>
+
+<div class="modal show" id="ageModal">
+  <div class="modal-box">
+    <h2>Age-restricted platform</h2>
+    <p class="muted">
+      This platform is intended only for adults. You must meet the legal
+      age requirement in your location. A button or checkbox is not
+      sufficient age verification.
+    </p>
+    <div class="notice">
+      Access remains locked until an approved third-party age assurance
+      provider confirms eligibility through a trusted server webhook.
+    </div>
+    <button class="primary" style="width:100%" onclick="closeAgeNotice()">
+      Continue to age assurance
+    </button>
+    <button class="btn" style="width:100%" onclick="leaveSite()">Exit</button>
+  </div>
+</div>
+
+<script type="module">
+// --------------------------------------------------
+// FIREBASE CONFIGURATION
+// Replace these values with your Firebase web app config.
+// --------------------------------------------------
+
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+
+import {
+  getAuth, createUserWithEmailAndPassword,
+  signInWithEmailAndPassword, signOut as firebaseSignOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+import {
+  getFirestore, collection, addDoc, getDocs,
+  query, where, serverTimestamp, orderBy
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+import {
+  getStorage, ref, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
+
+import {
+  getFunctions, httpsCallable
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.firebasestorage.app",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+let app, auth, db, storage, functions;
+let firebaseReady = false;
+
+try {
+  if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+    functions = getFunctions(app);
+    firebaseReady = true;
+
+    onAuthStateChanged(auth, user => {
+      currentUser = user;
+      updateAccountUI();
+      if (user) loadCreatorVideos();
+    });
+  }
+} catch(error) {
+  console.error("Firebase setup:", error);
+}
+
+// --------------------------------------------------
+// APPLICATION STATE
+// --------------------------------------------------
+
+let currentUser = null;
+let activeVideo = null;
+let activeCategory = "All";
+
+let videos = [
+  {
+    id:"sample1",
+    title:"Beautiful Nature in 4K",
+    creator:"Nature Vision",
+    category:"Nature",
+    thumbnail:"https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=900",
+    videoUrl:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    description:"Explore beautiful natural landscapes.",
+    views:12000,likes:230,status:"approved"
+  },
+  {
+    id:"sample2",
+    title:"Technology of the Future",
+    creator:"Tech Universe",
+    category:"Technology",
+    thumbnail:"https://images.unsplash.com/photo-1518770660439-4636190af475?w=900",
+    videoUrl:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    description:"Discover new technology.",
+    views:8500,likes:170,status:"approved"
+  },
+  {
+    id:"sample3",
+    title:"Gaming Highlights",
+    creator:"Game Zone",
+    category:"Gaming",
+    thumbnail:"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=900",
+    videoUrl:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    description:"Gaming highlights and entertainment.",
+    views:19000,likes:450,status:"approved"
+  },
+  {
+    id:"sample4",
+    title:"Creative Music Experience",
+    creator:"Music Studio",
+    category:"Music",
+    thumbnail:"https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=900",
+    videoUrl:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    description:"Music and creative inspiration.",
+    views:6000,likes:90,status:"approved"
+  }
+];
+
+let likedVideos = JSON.parse(localStorage.getItem("df_likes") || "[]");
+let watchHistory = JSON.parse(localStorage.getItem("df_history") || "[]");
+let subscriptions = JSON.parse(localStorage.getItem("df_subs") || "[]");
+let commentsByVideo = {};
+
+// --------------------------------------------------
+// NAVIGATION
+// --------------------------------------------------
+
+window.showPage = function(id,button) {
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id)?.classList.add("active");
+
+  document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
+  if(button) button.classList.add("active");
+
+  if(id==="explore") renderInto("exploreGrid",videos);
+  if(id==="trending") renderInto("trendingGrid",[...videos].sort((a,b)=>b.views-a.views));
+  if(id==="history") renderInto("historyGrid",videos.filter(v=>watchHistory.includes(v.id)));
+  if(id==="liked") renderInto("likedGrid",videos.filter(v=>likedVideos.includes(v.id)));
+  if(id==="studio") updateStats();
+};
+
+// --------------------------------------------------
+// VIDEO RENDERING
+// --------------------------------------------------
+
+function card(video) {
+  return `
+    <article class="video-card" onclick="openVideo('${video.id}')">
+      <img class="thumbnail" src="${safe(video.thumbnail)}"
+        alt="" loading="lazy">
+      <div class="video-info">
+        <div class="video-title">${safe(video.title)}</div>
+        <div class="video-meta">${safe(video.creator)} · ${Number(video.views).toLocaleString()} views</div>
+      </div>
+    </article>`;
+}
+
+function renderInto(elementId,list) {
+  document.getElementById(elementId).innerHTML =
+    list.map(card).join("") || '<p class="muted">No videos found.</p>';
+}
+
+window.renderVideos = function() {
+  const search = document.getElementById("searchInput").value.toLowerCase();
+  const filtered = videos.filter(v =>
+    v.status==="approved" &&
+    (activeCategory==="All" || v.category===activeCategory) &&
+    (v.title.toLowerCase().includes(search) ||
+     v.creator.toLowerCase().includes(search))
+  );
+  renderInto("videoGrid",filtered);
+};
+
+window.setCategory = function(category,button) {
+  activeCategory=category;
+  document.querySelectorAll(".category").forEach(c=>c.classList.remove("active"));
+  button.classList.add("active");
+  renderVideos();
+};
+
+window.openVideo = function(id) {
+  const video=videos.find(v=>v.id===id);
+  if(!video || video.status!=="approved") return;
+
+  activeVideo=video;
+  video.views++;
+  document.getElementById("watchTitle").textContent=video.title;
+  document.getElementById("watchMeta").textContent=
+    video.creator+" · "+video.views.toLocaleString()+" views";
+  document.getElementById("watchDescription").textContent=video.description;
+
+  const player=document.getElementById("videoPlayer");
+  player.src=video.videoUrl;
+  player.load();
+
+  if(!watchHistory.includes(id)) watchHistory.unshift(id);
+  watchHistory=watchHistory.slice(0,100);
+  localStorage.setItem("df_history",JSON.stringify(watchHistory));
+
+  renderComments();
+  showPage("watch");
+};
+
+window.toggleLike = function() {
+  if(!activeVideo) return;
+  const id=activeVideo.id;
+  likedVideos=likedVideos.includes(id)
+    ? likedVideos.filter(x=>x!==id)
+    : [...likedVideos,id];
+  localStorage.setItem("df_likes",JSON.stringify(likedVideos));
+  alert(likedVideos.includes(id)?"Video liked":"Like removed");
+};
+
+window.subscribeCreator = function() {
+  if(!activeVideo) return;
+  if(!currentUser) return alert("Please sign in first.");
+  const name=activeVideo.creator;
+  if(!subscriptions.includes(name)) subscriptions.push(name);
+  localStorage.setItem("df_subs",JSON.stringify(subscriptions));
+  alert("Subscribed to "+name);
+};
+
+window.shareVideo = async function() {
+  if(!activeVideo) return;
+  const url=location.href.split("#")[0]+"#video="+activeVideo.id;
+  try {
+    await navigator.clipboard.writeText(url);
+    alert("Video link copied.");
+  } catch {
+    prompt("Copy this link:",url);
+  }
+};
+
+// --------------------------------------------------
+// COMMENTS - LOCAL DEMO ONLY
+// --------------------------------------------------
+
+window.addComment = function() {
+  if(!currentUser) return alert("Sign in to comment.");
+  if(!activeVideo) return;
+
+  const input=document.getElementById("commentInput");
+  const message=input.value.trim();
+  if(!message) return;
+
+  commentsByVideo[activeVideo.id] ||= [];
+  commentsByVideo[activeVideo.id].push({
+    author:currentUser.email,
+    text:message
+  });
+  input.value="";
+  renderComments();
+};
+
+function renderComments() {
+  const comments=commentsByVideo[activeVideo?.id] || [];
+  document.getElementById("comments").innerHTML=comments.map(c=>`
+    <div class="list-item">
+      <strong>${safe(c.author)}</strong>
+      <p class="muted">${safe(c.text)}</p>
+    </div>`).join("");
+}
+
+// --------------------------------------------------
+// FIREBASE AUTHENTICATION
+// --------------------------------------------------
+
+window.register = async function() {
+  if(!firebaseReady) return authError("Configure Firebase first.");
+  try {
+    const email=document.getElementById("email").value.trim();
+    const password=document.getElementById("password").value;
+    if(password.length<8) throw new Error("Use a password of at least 8 characters.");
+    await createUserWithEmailAndPassword(auth,email,password);
+    authError("Account created. Complete required email and age verification.");
+  } catch(e) { authError(e.message); }
+};
+
+window.signIn = async function() {
+  if(!firebaseReady) return authError("Configure Firebase first.");
+  try {
+    await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("email").value.trim(),
+      document.getElementById("password").value
+    );
+    authError("Signed in.");
+  } catch(e) { authError(e.message); }
+};
+
+window.signOut = async function() {
+  if(firebaseReady) await firebaseSignOut(auth);
+};
+
+function authError(message) {
+  document.getElementById("authMessage").textContent=message;
+}
+
+function updateAccountUI() {
+  document.getElementById("signedOut").classList.toggle("hidden",!!currentUser);
+  document.getElementById("signedIn").classList.toggle("hidden",!currentUser);
+  document.getElementById("accountButton").textContent=
+    currentUser ? "My account" : "Sign in";
+  if(currentUser) {
+    document.getElementById("userEmail").textContent=currentUser.email;
+  }
+}
+
+// --------------------------------------------------
+// AGE ASSURANCE - TRUSTED BACKEND REQUIRED
+// --------------------------------------------------
+
+window.closeAgeNotice = function() {
+  document.getElementById("ageModal").classList.remove("show");
+  showPage("account");
+  if(!currentUser) {
+    authError("Sign in to begin the age assurance process.");
+  }
+};
+
+window.leaveSite = function() {
+  location.replace("about:blank");
+};
+
+window.beginAgeVerification = async function() {
+  if(!firebaseReady || !currentUser) {
+    return alert("Sign in and configure Firebase first.");
+  }
+
+  try {
+    // This callable must be implemented using your selected provider.
+    // The backend must create the verification session and return
+    // a trusted provider URL. A browser-side checkbox is not proof.
+    const start = httpsCallable(functions,"startAgeVerification");
+    const result = await start({});
+    const url=result.data?.url;
+
+    if(!url) throw new Error("Verification provider did not return a URL.");
+    location.assign(url);
+  } catch(e) {
+    alert("Age verification is not configured yet: "+e.message);
+  }
+};
+
+// --------------------------------------------------
+// VIDEO SUBMISSION
+// --------------------------------------------------
+
+window.submitUpload = async function() {
+  if(!currentUser) return alert("Sign in first.");
+  if(!firebaseReady) return alert("Configure Firebase first.");
+
+  const title=document.getElementById("uploadTitle").value.trim();
+  const description=document.getElementById("uploadDescription").value.trim();
+  const thumbnail=document.getElementById("uploadThumbnail").value.trim();
+  const videoUrl=document.getElementById("uploadVideoUrl").value.trim();
+  const category=document.getElementById("uploadCategory").value;
+  const attested=document.getElementById("consentAttestation").checked;
+
+  if(!title || !description || !thumbnail || !videoUrl || !attested) {
+    return alert("Complete every field and confirm the rights attestation.");
+  }
+
+  try {
+    await addDoc(collection(db,"videos"),{
+      title,description,thumbnail,videoUrl,category,
+      creatorId:currentUser.uid,
+      creatorEmail:currentUser.email,
+      consentAttestation:true,
+      consentStatus:"pending_review",
+      status:"pending",
+      views:0,likes:0,
+      createdAt:serverTimestamp()
+    });
+
+    document.getElementById("uploadMessage").textContent=
+      "Submission received for review. It is not published.";
+    loadCreatorVideos();
+  } catch(e) {
+    alert("Submission failed: "+e.message);
+  }
+};
+
+async function loadCreatorVideos() {
+  if(!firebaseReady || !currentUser) return;
+  try {
+    const q=query(collection(db,"videos"),
+      where("creatorId","==",currentUser.uid));
+    const snapshot=await getDocs(q);
+    const items=snapshot.docs.map(d=>({id:d.id,...d.data()}));
+    document.getElementById("creatorVideos").innerHTML=items.map(v=>`
+      <div class="list-item">
+        <strong>${safe(v.title)}</strong>
+        <p class="muted">Status: ${safe(v.status || "pending")}</p>
+      </div>`).join("") || '<p class="muted">No submissions yet.</p>';
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+// --------------------------------------------------
+// CREATOR DASHBOARD
+// --------------------------------------------------
+
+function updateStats() {
+  document.getElementById("statVideos").textContent=videos.length;
+  document.getElementById("statViews").textContent=
+    videos.reduce((sum,v)=>sum+Number(v.views||0),0).toLocaleString();
+  document.getElementById("statLikes").textContent=
+    videos.reduce((sum,v)=>sum+Number(v.likes||0),0).toLocaleString();
+}
+
+// --------------------------------------------------
+// BASIC OUTPUT ESCAPING
+// --------------------------------------------------
+
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+// --------------------------------------------------
+// INITIALIZE
+// --------------------------------------------------
+
+renderVideos();
+renderInto("exploreGrid",videos);
+renderInto("trendingGrid",[...videos].sort((a,b)=>b.views-a.views));
+updateAccountUI();
+</script>
+
+</body>
+</html>
